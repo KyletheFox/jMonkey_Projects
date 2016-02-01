@@ -52,7 +52,7 @@ public class Main extends SimpleApplication {
     }
     
     public void addMosquitos() {
-        theSwarm = new Mosquito[20];
+        theSwarm = new Mosquito[3];
         
         for(int i=0; i < theSwarm.length; ++i) {
             Mosquito bug = new Mosquito(this);
