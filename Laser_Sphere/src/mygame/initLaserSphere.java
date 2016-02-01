@@ -24,6 +24,7 @@ public class initLaserSphere {
     
     public initLaserSphere(SimpleApplication sa) {
         this.sa = sa;
+        initAppScreen(sa);
         initGUI();
         initMaterials();
         initCoordCross();
