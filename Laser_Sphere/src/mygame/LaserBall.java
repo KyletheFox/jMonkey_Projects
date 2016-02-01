@@ -49,7 +49,7 @@ public class LaserBall extends Node{
     }
     
     public void updateSize(float tpf) {
-        this.setLocalScale(1 + FastMath.sin(tpf));
+       // this.setLocalScale(1 + FastMath.sin(tpf));
     }
     
 }
