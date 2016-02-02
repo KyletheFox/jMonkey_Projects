@@ -19,6 +19,7 @@ public class Main extends SimpleApplication {
     initLaserSphere initLaser;
     LaserBall laserBall;
     Mosquito[] theSwarm;
+    Lasers laserBeams;
     
     Material matRed, matGreen, matBlue, matOrange, matArrow;
 
@@ -33,6 +34,9 @@ public class Main extends SimpleApplication {
         
         addLaserBall();
         addMosquitos();
+        addLasers();
+        
+        laserBeams.fireLasers(new Vector3f(2f, 2f, 1f));
     }
 
     @Override
@@ -52,12 +56,18 @@ public class Main extends SimpleApplication {
     }
     
     public void addMosquitos() {
-        theSwarm = new Mosquito[3];
+        theSwarm = new Mosquito[20];
         
         for(int i=0; i < theSwarm.length; ++i) {
             Mosquito bug = new Mosquito(this);
             rootNode.attachChild(bug);
         }
+        
+    }
+    
+    public void addLasers() {
+        laserBeams = new Lasers(this);
+        rootNode.attachChild(laserBeams);
     }
 
 }
