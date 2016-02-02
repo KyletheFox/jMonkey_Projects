@@ -26,8 +26,6 @@ public class initLaserSphere {
         this.sa = sa;
         initAppScreen(sa);
         initGUI();
-        initMaterials();
-        initCoordCross();
         initCam();
     }
     
@@ -46,34 +44,6 @@ public class initLaserSphere {
         //setDisplayFps(false);
         sa.setDisplayStatView(false);
         sa.getFlyByCamera().setEnabled(false);
-    }
-    
-    
-     private void initCoordCross() {
-        Line xAxis = new Line(new Vector3f(3, 0, 0), Vector3f.ZERO);
-        Line yAxis = new Line(new Vector3f(0, 3, 0), Vector3f.ZERO);
-        Line zAxis = new Line(new Vector3f(0, 0, 3), Vector3f.ZERO);
-        Geometry geomX = new Geometry("xAxis", xAxis);
-        Geometry geomY = new Geometry("yAxis", yAxis);
-        Geometry geomZ = new Geometry("zAxis", zAxis);
-        geomX.setMaterial(matRed);
-        geomY.setMaterial(matGreen);
-        geomZ.setMaterial(matBlue);
-        sa.getRootNode().attachChild(geomX);
-        sa.getRootNode().attachChild(geomY);
-        sa.getRootNode().attachChild(geomZ);
-    }
-
-    private void initMaterials() {
-        matRed = new Material(sa.getAssetManager(),
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        matRed.setColor("Color", ColorRGBA.Red);
-        matGreen = new Material(sa.getAssetManager(),
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        matGreen.setColor("Color", ColorRGBA.Green);
-        matBlue = new Material(sa.getAssetManager(),
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        matBlue.setColor("Color", ColorRGBA.Blue);
     }
     
      private void initCam() {

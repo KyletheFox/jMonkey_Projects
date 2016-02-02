@@ -3,12 +3,14 @@ package mygame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
+import com.jme3.util.SkyFactory;
 
 /**
  * test
@@ -20,8 +22,8 @@ public class Main extends SimpleApplication {
     LaserBall laserBall;
     Mosquito[] theSwarm;
     Lasers laserBeams;
-    
-    Material matRed, matGreen, matBlue, matOrange, matArrow;
+    SingleBurstParticleEmitter explosion;
+    float time = 0;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -35,14 +37,26 @@ public class Main extends SimpleApplication {
         addLaserBall();
         addMosquitos();
         addLasers();
-        
-        laserBeams.fireLasers(new Vector3f(2f, 2f, 1f));
+        addSky();
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
+        time += tpf;
         laserBall.updateSize(tpf);
+        rootNode.getChild(22).setLocalRotation(new Quaternion(1f, 0f, 0f, time));
+        
+        for(int i=0; i < theSwarm.length; i++) {
+            if (theSwarm[i].position.length() <= 2) {
+                explosion = new SingleBurstParticleEmitter(this, rootNode, theSwarm[i].position);
+                theSwarm[i].detachAllChildren();
+                laserBeams.fireLasers(theSwarm[i].position);
+                Mosquito bug = new Mosquito(this);
+                theSwarm[i] = bug;
+                rootNode.attachChild(bug);
+            }
+        }
     }
 
     @Override
@@ -60,6 +74,7 @@ public class Main extends SimpleApplication {
         
         for(int i=0; i < theSwarm.length; ++i) {
             Mosquito bug = new Mosquito(this);
+            theSwarm[i] = bug;
             rootNode.attachChild(bug);
         }
         
@@ -68,6 +83,11 @@ public class Main extends SimpleApplication {
     public void addLasers() {
         laserBeams = new Lasers(this);
         rootNode.attachChild(laserBeams);
+    }
+    
+    public void addSky() {
+        rootNode.attachChild(SkyFactory.createSky(
+            assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
     }
 
 }

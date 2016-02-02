@@ -24,8 +24,9 @@ import com.jme3.scene.shape.Sphere;
  */
 public class Mosquito extends Node{
     
-    private Vector3f position = new Vector3f();
+    Vector3f position;
     float time = 0;
+    Vector3f distance;
      
     public Mosquito(SimpleApplication sa) {
         Sphere bug = new Sphere(10, 10, 0.15f);
@@ -34,7 +35,10 @@ public class Mosquito extends Node{
                 "Common/MatDefs/Misc/Unshaded.j3md");
         BugControl bControl = new BugControl();
         mBug.setColor("Color", ColorRGBA.randomColor());
-        gBug.setLocalTranslation(getNewLocation());
+        
+        distance = getNewLocation();
+        position = distance;
+        gBug.setLocalTranslation(distance);
         gBug.setMaterial(mBug);
         gBug.addControl(bControl);
         this.attachChild(gBug);
@@ -64,7 +68,7 @@ public class Mosquito extends Node{
             pos = q.mult(position);
             
             // Inward
-            Vector3f gravity = position.scaleAdd(-0.01f * tpf, Vector3f.ZERO);
+            Vector3f gravity = position.scaleAdd(-0.3f * tpf, Vector3f.ZERO);
             pos = pos.addLocal(gravity);
             
             

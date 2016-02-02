@@ -10,9 +10,13 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Cylinder;
+import java.util.Date;
 
 /**
  *
@@ -32,30 +36,37 @@ public class Lasers extends Node {
     
     public void fireLasers(Vector3f target) {
         
-        Cylinder rLaser = new Cylinder(10, 10, 0.05f, target.length()*2);
-        Cylinder lLaser = new Cylinder(10, 10, 0.05f, target.length()*2);
+        if (readyToFire) {
+            Cylinder rLaser = new Cylinder(10, 10, 0.05f, target.length());
+            Cylinder lLaser = new Cylinder(10, 10, 0.05f, target.length());
+
+            Geometry gRL = new Geometry("rlaser", rLaser);
+            Geometry gLL = new Geometry("llaser", lLaser);
+
+            Material mlaser = new Material(sApp.getAssetManager(),
+           "Common/MatDefs/Misc/Unshaded.j3md");
+            mlaser.setColor("Color", ColorRGBA.Red);
+            Material mlaser2 = new Material(sApp.getAssetManager(),
+           "Common/MatDefs/Misc/Unshaded.j3md");
+            mlaser.setColor("Color", ColorRGBA.Green);
+
+            gRL.setMaterial(mlaser);
+            gLL.setMaterial(mlaser2);
+
+            Quaternion rotRight = getQuaternion(target, new Vector3f(1f, 0, 1f).normalizeLocal().subtract(rightPos));
+            Quaternion rotLeft = getQuaternion(target, new Vector3f(-1f, 0, 1f).normalizeLocal().subtract(leftPos));
+
+            gRL.setLocalRotation(rotRight);
+            gLL.setLocalRotation(rotLeft);
+
+            gRL.setLocalTranslation(target);
+            gLL.setLocalTranslation(target);
+
+            this.attachChild(gRL);
+            this.attachChild(gLL);
         
-        Geometry gRL = new Geometry("rlaser", rLaser);
-        Geometry gLL = new Geometry("llaser", lLaser);
-        
-        Material mlaser = new Material(sApp.getAssetManager(),
-       "Common/MatDefs/Misc/Unshaded.j3md");
-        mlaser.setColor("Color", ColorRGBA.Red);
-        
-        gRL.setMaterial(mlaser);
-        gLL.setMaterial(mlaser);
-        
-        Quaternion rotLeft = getQuaternion(target, leftPos);
-        Quaternion rotRight = getQuaternion(target, rightPos);
-        
-        gRL.setLocalRotation(rotRight);
-        gLL.setLocalRotation(rotLeft);
-        
-        gRL.setLocalTranslation(rightPos);
-        gLL.setLocalTranslation(leftPos);
-        
-        this.attachChild(gRL);
-        this.attachChild(gLL);
+            readyToFire = false;
+        }
         
     }
     
@@ -67,12 +78,34 @@ public class Lasers extends Node {
         start.normalizeLocal();
         target.normalizeLocal();
         
-        rotAxis = Vector3f.UNIT_Z.cross(target);      // Rotational Axis
+        rotAxis = start.cross(target);      // Rotational Axis
         
         sinAlpha = rotAxis.length();
-        cosAlpha = Vector3f.UNIT_Z.dot(target);
+        cosAlpha = start.dot(target);
         alpha = FastMath.atan2(sinAlpha, cosAlpha);
         q.fromAngleAxis(alpha, rotAxis);
         return q;
     }
+    
+     private class laserControl extends AbstractControl {
+
+        @Override
+        protected void controlUpdate(float tpf) {
+            if (!readyToFire) {
+                  try {
+                    Thread.sleep(1000);
+                  } catch (InterruptedException ie) {
+                      //Handle exception
+                  }
+                  this.spatial.removeFromParent();
+                  readyToFire = true;
+            }
+        }
+
+        @Override
+        protected void controlRender(RenderManager rm, ViewPort vp) {
+            
+        }
+         
+     }
 }
