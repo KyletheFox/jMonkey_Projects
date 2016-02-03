@@ -35,10 +35,9 @@ public class Mosquito extends Node{
                 "Common/MatDefs/Misc/Unshaded.j3md");
         BugControl bControl = new BugControl();
         mBug.setColor("Color", ColorRGBA.randomColor());
-        
-        distance = getNewLocation();
-        position = distance;
-        gBug.setLocalTranslation(distance);
+         
+        position = getNewLocation();
+        gBug.setLocalTranslation(position);
         gBug.setMaterial(mBug);
         gBug.addControl(bControl);
         this.attachChild(gBug);
@@ -61,14 +60,14 @@ public class Mosquito extends Node{
             Vector3f pos;
             
             // Orbit
-            Vector3f rotAxis = position.cross(randVector);
+            Vector3f rotAxis = randVector.cross(position);
             rotAxis.normalizeLocal();
             Quaternion q = new Quaternion();
-            q.fromAngleAxis(time, rotAxis);
+            q.fromAngleAxis(time*0.1f, rotAxis);
             pos = q.mult(position);
             
             // Inward
-            Vector3f gravity = position.scaleAdd(-0.3f * tpf, Vector3f.ZERO);
+            Vector3f gravity = position.scaleAdd(-0.2f * tpf, Vector3f.ZERO);
             pos = pos.addLocal(gravity);
             
             

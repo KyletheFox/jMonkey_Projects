@@ -7,6 +7,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
@@ -45,7 +46,7 @@ public class Main extends SimpleApplication {
         //TODO: add update code
         time += tpf;
         laserBall.updateSize(tpf);
-        rootNode.getChild(22).setLocalRotation(new Quaternion(1f, 0f, 0f, time));
+        //rootNode.getChild(22).setLocalRotation(new Quaternion(1f, 0f, 0f, time));
         
         for(int i=0; i < theSwarm.length; i++) {
             if (theSwarm[i].position.length() <= 2) {
@@ -70,13 +71,16 @@ public class Main extends SimpleApplication {
     }
     
     public void addMosquitos() {
+        Node swarmNode = new Node();
         theSwarm = new Mosquito[20];
         
         for(int i=0; i < theSwarm.length; ++i) {
             Mosquito bug = new Mosquito(this);
             theSwarm[i] = bug;
-            rootNode.attachChild(bug);
+            swarmNode.attachChild(bug);
         }
+        
+        rootNode.attachChild(swarmNode);
         
     }
     
