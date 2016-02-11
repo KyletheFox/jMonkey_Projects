@@ -3,6 +3,8 @@ package mygame;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
@@ -30,6 +32,7 @@ public class Oto {
     private float groundSpeed = 0.0f;
     float left = 0;
     float right = 0;
+    ObjectField objField;
     //
     // -------------------------------------------------------------------------
     // the key action listener: set requested state
@@ -44,22 +47,23 @@ public class Oto {
         final float SPEED_SCALE = 6.0f;
 
         public void onAnalog(String name, float value, float tpf) {
-            if (name.equals("Left") && left < 1) {
-                left += tpf;
-                right -= tpf;
-                otoNode.setLocalTranslation(otoNode.getLocalTranslation().addLocal(-tpf * SPEED_SCALE, 0, 0));
+            if (name.equals("Left") && left < 1.5) {
+                left += tpf*2;
+                right -= tpf*2;
+                otoNode.setLocalTranslation(otoNode.getLocalTranslation().addLocal(-tpf * 2 * SPEED_SCALE, 0, 0));
             }
-            if (name.equals("Right") && right < 1) {
-                right += tpf;
-                left -= tpf;
-                otoNode.setLocalTranslation(otoNode.getLocalTranslation().addLocal(tpf * SPEED_SCALE, 0, 0));
+            if (name.equals("Right") && right < 1.5) {
+                right += tpf*2;
+                left -= tpf*2;
+                otoNode.setLocalTranslation(otoNode.getLocalTranslation().addLocal(tpf * 2 * SPEED_SCALE, 0, 0));
             }
         }
     };
 
     // -------------------------------------------------------------------------
-    public Oto(SimpleApplication sa) {
+    public Oto(SimpleApplication sa, ObjectField field) {
         this.sa = sa;
+        this.objField = field;
         initKeys();
         initModel();
     }
@@ -146,7 +150,6 @@ public class Oto {
                     break;
                 case (STATE_JUMP):
                     final float JUMP_HEIGHT = 6f;
-                    System.out.println(otoNode.getLocalTranslation());
                     if (!stateIsInitialized) {
                         stateIsInitialized = true;
                         channel.setAnim("pull");
@@ -178,6 +181,22 @@ public class Oto {
                         switchState(STATE_JUMP);
                     }
                     break;
+            }
+            
+             CollisionResults results = new CollisionResults();
+             int count = 0;
+             for (int i=0; i<50; i++){          
+                BoundingVolume bv = objField.getChild(i).getWorldBound();
+                otoNode.collideWith(bv, results);
+                if (results.size()>0){
+                   System.out.println("Collision with obstacle "+count+"   >>  "+results.getCollision(0).toString());
+                    count++;
+                    for(int j=0; j<3; j++) {
+                        new SingleBurstParticleEmitter(sa, otoNode, Vector3f.ZERO);
+                    }
+                    otoNode.setLocalScale(0.001f);
+                    results.clear();
+                }
             }
         }
 
