@@ -33,6 +33,7 @@ public class Oto {
     float left = 0;
     float right = 0;
     ObjectField objField;
+    boolean dead = false;
     //
     // -------------------------------------------------------------------------
     // the key action listener: set requested state
@@ -149,7 +150,7 @@ public class Oto {
                     }
                     break;
                 case (STATE_JUMP):
-                    final float JUMP_HEIGHT = 6f;
+                    final float JUMP_HEIGHT = 8f;
                     if (!stateIsInitialized) {
                         stateIsInitialized = true;
                         channel.setAnim("pull");
@@ -183,19 +184,20 @@ public class Oto {
                     break;
             }
             
-             CollisionResults results = new CollisionResults();
-             int count = 0;
-             for (int i=0; i<50; i++){          
-                BoundingVolume bv = objField.getChild(i).getWorldBound();
-                otoNode.collideWith(bv, results);
-                if (results.size()>0){
-                   System.out.println("Collision with obstacle "+count+"   >>  "+results.getCollision(0).toString());
-                    count++;
-                    for(int j=0; j<3; j++) {
+            if (!dead){
+                CollisionResults results = new CollisionResults();
+                int count = 0;
+                for (int i=0; i<50; i++){          
+                    BoundingVolume bv = objField.getChild(i).getWorldBound();
+                    otoNode.collideWith(bv, results);
+                    if (results.size()>0){
+                        System.out.println("Collision with obstacle "+count+"   >>  "+results.getCollision(0).toString());
+                        count++;
                         new SingleBurstParticleEmitter(sa, otoNode, Vector3f.ZERO);
+                        otoNode.setLocalScale(0.001f);
+                        dead = true;
+                        results.clear();
                     }
-                    otoNode.setLocalScale(0.001f);
-                    results.clear();
                 }
             }
         }

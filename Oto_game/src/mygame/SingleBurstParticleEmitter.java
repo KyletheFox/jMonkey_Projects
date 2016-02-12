@@ -45,7 +45,7 @@ public class SingleBurstParticleEmitter extends AbstractControl{
     }  
     
     private void init(){
-        emitter = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 300);
+        emitter = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 2000);
         Material debris_mat = new Material(sa.getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
         debris_mat.setTexture("Texture", sa.getAssetManager().loadTexture("Effects/Explosion/Debris.png"));
         emitter.setMaterial(debris_mat);
@@ -56,9 +56,9 @@ public class SingleBurstParticleEmitter extends AbstractControl{
         emitter.setStartColor(ColorRGBA.randomColor());
         emitter.setEndColor(ColorRGBA.Black);
         emitter.setGravity(0,0, 0);
-        emitter.getParticleInfluencer().setVelocityVariation(1.0f);
+        emitter.getParticleInfluencer().setVelocityVariation(2.0f);
         emitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 4, 0));
-        emitter.setStartSize(0.3f);
+        emitter.setStartSize(0.5f);
         emitter.setEndSize(0.005f);
         emitter.setLowLife(0.5f);
         emitter.setHighLife(MAXLIFETIME);

@@ -89,8 +89,7 @@ public class Lasers extends Node {
     
      private class laserControl extends AbstractControl {
 
-        @Override
-        protected void controlUpdate(float tpf) {
+         protected void controlUpdate(float tpf) {
             if (!readyToFire) {
                   try {
                     Thread.sleep(1000);

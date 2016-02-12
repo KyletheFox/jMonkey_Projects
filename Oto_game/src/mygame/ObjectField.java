@@ -19,15 +19,19 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class ObjectField extends Node {
     
+    float angle;
+    SimpleApplication sApp;
+    
     public ObjectField(SimpleApplication sa, int numberOfObjects) {
-                
+        
+        this.sApp = sa;
         for (int i=0; i<numberOfObjects; i++) {
 
             // Create New Object
-            Object obj = new Object(sa);
+            Object obj = new Object(sApp);
             
             // Generate Random Angle
-            float angle = FastMath.nextRandomInt(-240, 60) * FastMath.DEG_TO_RAD;
+            angle = (FastMath.nextRandomInt(135, 430) * FastMath.DEG_TO_RAD);
             
             // Place object on random location on planet
             obj.setLocalTranslation(randLocationOnPlanet(angle));
@@ -42,6 +46,25 @@ public class ObjectField extends Node {
     private Vector3f randLocationOnPlanet(float angle) {
         float xMove = -12.5f + FastMath.nextRandomInt(0, 25);
         return new Vector3f(xMove, 200f*FastMath.sin(angle), 200f*FastMath.cos(angle));
+    }
+    
+    public void addObj(int numObjs) {
+        
+        for (int i=0; i<numObjs; i++) {
+
+            // Create New Object
+            Object obj = new Object(sApp);
+            
+            // Generate Random Angle
+            angle = (FastMath.nextRandomInt(135, 430) * FastMath.DEG_TO_RAD);
+            
+            // Place object on random location on planet
+            obj.setLocalTranslation(randLocationOnPlanet(angle));
+           
+            this.attachChild(obj);
+            this.setLocalTranslation(0, -200f, 0);
+
+        }
     }
     
     class ObjFieldControl extends AbstractControl {

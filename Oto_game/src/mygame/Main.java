@@ -33,39 +33,24 @@ public class Main extends SimpleApplication {
     Oto oto;
     PlanetSurface planet;
     float time = 0;
-    Object obj;
     
     public static void main(String[] args) {
         Main app = new Main();
+        AppSettings settings = new AppSettings(true);
         initAppScreen(app);
+        app.setShowSettings(false);
         app.start();
     }
 
     @Override
     public void simpleInitApp() {
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.1f, 1f, 1f).normalizeLocal());
-        rootNode.addLight(dl);  
         
-        initCam();
-        initLightShadows();
-        
-        planet = new PlanetSurface(this);
-        obj = new Object(this);
-        
-        PlanetNode = new Node();
-        PlanetControl c = new PlanetControl();
-        PlanetNode.addControl(c);
-        PlanetNode.attachChild(planet);
-        
-        objField = new ObjectField(this, 150);
-        PlanetNode.attachChild(objField);
-        PlanetNode.setLocalTranslation(0, -200f, 0);
-         
-        rootNode.attachChild(PlanetNode);
-        
-        oto = new Oto(this, objField);
-        oto.setGroundSpeed(2.5f);
+          initCam();
+          initLightShadows();
+          initGUI();
+          
+          StartScreen s = new StartScreen();
+          stateManager.attach(s);
     }
 
     @Override
@@ -76,6 +61,12 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
+    }
+    
+    protected static void clearJMonkey(Main m) {
+        m.guiNode.detachAllChildren();
+        m.rootNode.detachAllChildren();
+        m.inputManager.clearMappings();
     }
     
     public void initCam() {
@@ -117,27 +108,36 @@ public class Main extends SimpleApplication {
         app.setShowSettings(false);
     }
     
-    public class PlanetControl extends AbstractControl {
-
-        @Override
-        protected void controlUpdate(float tpf) {
-            time += tpf;   
-            Quaternion q = new Quaternion();
-            q.fromAngleAxis(time * 0.12f, Vector3f.UNIT_X);
-            this.spatial.setLocalRotation(q);
-            
-            if (FastMath.floor(time * 0.12f) == 260f * FastMath.DEG_TO_RAD) {
-                PlanetNode.detachChildAt(1);
-                ObjectField field = new ObjectField(sa,150);
-                PlanetNode.attachChild(field);
-            }
-        }
-
-        @Override
-        protected void controlRender(RenderManager rm, ViewPort vp) {
-        }
-        
-    };
+    private void initGUI() {
+        setDisplayStatView(false);
+        setDisplayFps(true);
+    }
+    
+     public AppSettings getSettings() {
+        return (settings);
+    }
+    
+//    public class PlanetControl extends AbstractControl {
+//
+//        @Override
+//        protected void controlUpdate(float tpf) {
+//            time += tpf;   
+//            Quaternion q = new Quaternion();
+//            q.fromAngleAxis(time * 0.12f, Vector3f.UNIT_X);
+//            this.spatial.setLocalRotation(q);
+//            
+//            if (FastMath.floor(time * 0.12f) == 260f * FastMath.DEG_TO_RAD) {
+//                PlanetNode.detachChildAt(1);
+//                ObjectField field = new ObjectField(sa,150);
+//                PlanetNode.attachChild(field);
+//            }
+//        }
+//
+//        @Override
+//        protected void controlRender(RenderManager rm, ViewPort vp) {
+//        }
+//        
+//    };
     
     
 }

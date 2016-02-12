@@ -6,6 +6,7 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
@@ -23,6 +24,7 @@ public class PlanetSurface extends Node {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mPlanet.setTexture("ColorMap", sa.getAssetManager().loadTexture("Textures/planet.jpg"));
         gPlanet.setMaterial(mPlanet);
+        //gPlanet.rotate(0, 0, 90f * FastMath.DEG_TO_RAD);
         this.attachChild(gPlanet);
     }
 }
