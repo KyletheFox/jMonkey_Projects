@@ -78,8 +78,8 @@ public class Oto {
     // -------------------------------------------------------------------------  
     // Custom Keybindings: Mapping a named action to a key input.
     private void initKeys() {
-        sa.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_J));
-        sa.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_L));
+        sa.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_LEFT));
+        sa.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_RIGHT));
         sa.getInputManager().addMapping("Push", new KeyTrigger(KeyInput.KEY_V));
         sa.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         sa.getInputManager().addListener(actionListener, new String[]{"Push", "Jump"});
@@ -104,6 +104,10 @@ public class Oto {
         // add control
         otoControl = new OtoControl();
         otoNode.addControl(otoControl);
+    }
+    
+    public Vector3f getLocation() {
+        return otoNode.getWorldTranslation();
     }
 
     // -------------------------------------------------------------------------
@@ -187,7 +191,7 @@ public class Oto {
             if (!dead){
                 CollisionResults results = new CollisionResults();
                 int count = 0;
-                for (int i=0; i<50; i++){          
+                for (int i=0; i<objField.totalObjects; i++){          
                     BoundingVolume bv = objField.getChild(i).getWorldBound();
                     otoNode.collideWith(bv, results);
                     if (results.size()>0){

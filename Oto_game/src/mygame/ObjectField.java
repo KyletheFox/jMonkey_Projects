@@ -21,9 +21,10 @@ public class ObjectField extends Node {
     
     float angle;
     SimpleApplication sApp;
+    int totalObjects;
     
     public ObjectField(SimpleApplication sa, int numberOfObjects) {
-        
+        this.totalObjects = numberOfObjects;
         this.sApp = sa;
         for (int i=0; i<numberOfObjects; i++) {
 
@@ -31,7 +32,7 @@ public class ObjectField extends Node {
             Object obj = new Object(sApp);
             
             // Generate Random Angle
-            angle = (FastMath.nextRandomInt(135, 430) * FastMath.DEG_TO_RAD);
+            angle = (FastMath.nextRandomInt(-250, 80) * FastMath.DEG_TO_RAD);
             
             // Place object on random location on planet
             obj.setLocalTranslation(randLocationOnPlanet(angle));
@@ -49,6 +50,8 @@ public class ObjectField extends Node {
     }
     
     public void addObj(int numObjs) {
+        
+        totalObjects += numObjs;
         
         for (int i=0; i<numObjs; i++) {
 

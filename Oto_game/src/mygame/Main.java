@@ -49,6 +49,18 @@ public class Main extends SimpleApplication {
           initLightShadows();
           initGUI();
           
+//          PlanetSurface planet = new PlanetSurface(this);
+//          ObjectField objField = new ObjectField(this, 150);
+//          Oto oto = new Oto(this, objField);
+//          
+//          Node n = new Node();
+//          
+//          n.attachChild(planet);
+//          n.attachChild(objField);
+//          
+//          n.setLocalTranslation(0, -200f, 0);
+//          rootNode.attachChild(n);
+          
           StartScreen s = new StartScreen();
           stateManager.attach(s);
     }
@@ -116,28 +128,5 @@ public class Main extends SimpleApplication {
      public AppSettings getSettings() {
         return (settings);
     }
-    
-//    public class PlanetControl extends AbstractControl {
-//
-//        @Override
-//        protected void controlUpdate(float tpf) {
-//            time += tpf;   
-//            Quaternion q = new Quaternion();
-//            q.fromAngleAxis(time * 0.12f, Vector3f.UNIT_X);
-//            this.spatial.setLocalRotation(q);
-//            
-//            if (FastMath.floor(time * 0.12f) == 260f * FastMath.DEG_TO_RAD) {
-//                PlanetNode.detachChildAt(1);
-//                ObjectField field = new ObjectField(sa,150);
-//                PlanetNode.attachChild(field);
-//            }
-//        }
-//
-//        @Override
-//        protected void controlRender(RenderManager rm, ViewPort vp) {
-//        }
-//        
-//    };
-    
     
 }

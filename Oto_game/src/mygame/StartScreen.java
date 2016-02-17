@@ -4,6 +4,8 @@ package mygame;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
@@ -19,6 +21,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
+
 /**
  *
  * @author Kyle O'Neill
@@ -26,15 +29,17 @@ import com.jme3.system.AppSettings;
 public class StartScreen extends AbstractAppState implements ActionListener{
     
     Main main;
+    ParticleEmitter debrisEffect;
     AppStateManager asm;
-    BitmapText text;
+    BitmapText text, blinkText;
     AppSettings s;
-    boolean gameStarted = false;
+    float time;
+    boolean gameStarted, blinkFlag;
+    
     
     public void onAction(String name, boolean isPressed, float tpf) {
         if (isPressed) {
             if (name.equals("start") && !gameStarted) {
-                System.out.println("Typed space");
                 Game g = new Game();
                 asm.detach(this);
                 asm.attach(g);
@@ -51,8 +56,12 @@ public class StartScreen extends AbstractAppState implements ActionListener{
         main = (Main) app;
         asm = stateManager;
         s = main.getSettings();
+        time = 0;
+        gameStarted = false;
+        blinkFlag = true;
+        Node explode = new Node();
         Main.clearJMonkey(main);
-        
+           
         main.getViewPort().setBackgroundColor(ColorRGBA.LightGray);
         
         // Start Screen Text 
@@ -64,14 +73,13 @@ public class StartScreen extends AbstractAppState implements ActionListener{
         text.setLocalTranslation(getCenterGui().add(-text.getLineWidth()/2f,s.getHeight()/4f,0));
         main.getGuiNode().attachChild(text);
         
-        // set camera location
-//        main.getFlyByCamera().setEnabled(false);
-//        Node cameraTarget = new Node();
-//        CameraNode camNode = new CameraNode("Camera Node", main.getCamera());
-//        camNode.setLocalTranslation(new Vector3f(0f, 6f, 15f));
-//        camNode.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-//        cameraTarget.attachChild(camNode);
-//        main.getRootNode().attachChild(cameraTarget);
+        blinkText = new BitmapText(bmf);
+        blinkText.setSize(bmf.getCharSet().getRenderedSize() * 3);
+        blinkText.setColor(ColorRGBA.Red);
+        blinkText.setText("Press Space to start the Game");
+        blinkText.setLocalTranslation(getCenterGui().add(-blinkText.getLineWidth()/2f,s.getHeight()*-0.1f,0));
+        main.getGuiNode().attachChild(blinkText);
+        
         
         // Input Listeners
         InputManager inputManager = main.getInputManager();
@@ -80,8 +88,26 @@ public class StartScreen extends AbstractAppState implements ActionListener{
         inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_Q));
         inputManager.addListener(this, "start", "quit");
         
-//        Game demoGame = new Game(); // true => demo mode
-//        stateManager.attach(demoGame);
+            /** Explosion effect. Uses Texture from jme3-test-data library! */ 
+        debrisEffect = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 700);
+        Material debrisMat = new Material(main.getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
+        debrisMat.setTexture("Texture", main.getAssetManager().loadTexture("Effects/Explosion/Debris.png"));
+        debrisEffect.setMaterial(debrisMat);
+        debrisEffect.setImagesX(3); debrisEffect.setImagesY(3); // 3x3 texture animation
+        debrisEffect.setRotateSpeed(4);
+        debrisEffect.setSelectRandomImage(true);
+        debrisEffect.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 10f, 0));
+        debrisEffect.setStartColor(new ColorRGBA(1f, 1f, 1f, 1f));
+        debrisEffect.setGravity(0f,-3f,0f);
+        debrisEffect.getParticleInfluencer().setVelocityVariation(.60f);
+        
+        explode.attachChild(debrisEffect);
+        explode.setLocalTranslation(0, -10f, 0);
+        main.getRootNode().attachChild(explode);
+        
+        debrisEffect.emitAllParticles();
+        
+
 
     }
     
@@ -93,7 +119,13 @@ public class StartScreen extends AbstractAppState implements ActionListener{
 
      @Override
     public void update(float tpf) {
-        
+        time += tpf;
+        if (FastMath.floor(time) % 2 == 0) {
+            blinkText.setText("Press Space to start the Game");
+        }
+        else {
+            blinkText.setText("");
+        }
     }
      
     private Vector3f getCenterGui() {
